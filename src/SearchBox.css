@@ -1,9 +1,5 @@
-.searchBox
-{    display: flex;
-    justify-content: center;
-}
-
-.input 
-{
-    width: 340px;
-}
+input::placeholder {
+    color: white;
+    opacity: 1; /* ensures full visibility */
+  }
+  

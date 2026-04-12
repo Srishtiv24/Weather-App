@@ -1,91 +1,108 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
-import CloudOutlinedIcon from "@mui/icons-material/CloudOutlined";
-import ThunderstormOutlinedIcon from "@mui/icons-material/ThunderstormOutlined";
-import "./InfoBox.css";
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function getWeatherIcon(desc, temp) {
+  const d = (desc || "").toLowerCase();
+  if (d.includes("thunder") || d.includes("storm")) return "⛈";
+  if (d.includes("snow")) return "❄️";
+  if (d.includes("rain") || d.includes("drizzle")) return "🌧";
+  if (d.includes("fog") || d.includes("haze") || d.includes("mist")) return "🌫";
+  if (d.includes("cloud")) return "⛅";
+  if (temp > 30) return "☀️";
+  return "🌤";
+}
+
+function getLocalTime(timezone) {
+  const now = new Date(
+    Date.now() + (timezone || 0) * 1000 + new Date().getTimezoneOffset() * 60000
+  );
+  const h = now.getHours();
+  const isNight = h < 6 || h >= 19;
+  const hDisp = h % 12 || 12;
+  const mDisp = String(now.getMinutes()).padStart(2, "0");
+  const ampm = h >= 12 ? "PM" : "AM";
+  const dayStr = `${DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}`;
+  return { label: `${hDisp}:${mDisp} ${ampm} · ${dayStr}`, isNight };
+}
 
 export default function InfoBox({ info }) {
-  const image = {
-    sunny:
-      "https://images.unsplash.com/12/sun-trees.jpg?q=80&w=1340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    haze: "https://images.unsplash.com/photo-1643948962441-c8947e0fe565?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    clear:
-      "https://images.unsplash.com/photo-1464660439080-b79116909ce7?q=80&w=1502&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    snow: "https://images.unsplash.com/photo-1589218112660-81ef972e89e3?q=80&w=1330&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    rainy:
-      "https://images.unsplash.com/photo-1610741083757-1ae88e1a17f7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    windy:
-      "https://images.unsplash.com/photo-1470176519524-3c2f481c8c9c?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    thunder:
-      "https://images.unsplash.com/photo-1538169204832-1b461add30a5?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    overcast:
-      "https://images.unsplash.com/photo-1604042403941-398c711e4218?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    fog: "https://plus.unsplash.com/premium_photo-1669613233557-1676c121fe73?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  const { label, isNight } = getLocalTime(info.timezone);
+  const icon = getWeatherIcon(info.weather, info.temp);
+
+  const glass = {
+    background: "rgba(255,255,255,0.15)",
+    backdropFilter: "blur(16px)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 14,
+    color: "#fff",
+  };
+
+  const badge = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    background: "rgba(255,255,255,0.15)",
+    borderRadius: 20,
+    padding: "5px 12px",
+    fontSize: 13,
+    marginBottom: 10,
+  };
+
+  const metaGrid = {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 10,
+    marginTop: 16,
+  };
+
+  const metaItem = {
+    background: "rgba(255,255,255,0.1)",
+    borderRadius: 12,
+    padding: "10px 14px",
   };
 
   return (
-    <div>
-      <div className="infobox">
-        <Card sx={{ maxWidth: 345 }} className="card">
-          <CardMedia
-            sx={{ height: 160 }}
-            image={
-              info.temp >= 40
-                ? image.sunny // extreme heat
-                : info.temp >= 30 && info.humidity >= 70
-                ? image.thunder // hot + very humid → thunderstorm
-                : info.temp >= 30 && info.humidity >= 50
-                ? image.rainy // hot + humid → monsoon rains
-                : info.temp >= 30
-                ? image.sunny // hot but dry → sunny
-                : info.temp >= 20
-                ? image.clear // pleasant clear skies
-                : info.temp >= 15
-                ? image.overcast // mild, cloudy
-                : info.temp >= 10
-                ? image.haze // cool haze
-                : info.temp >= 5
-                ? image.fog // foggy chill
-                : info.temp >= 0
-                ? image.windy // cold winds
-                : info.temp < 0
-                ? image.snow // freezing snow
-                : image.clear
-            }
-            title="city"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {info.city}
-              &nbsp;
-              {info.temp <= 10 ? (
-                <AcUnitOutlinedIcon /> // ❄️ Cold → Snow/Ice
-              ) : info.temp >= 30 && info.humidity >= 70 ? (
-                <ThunderstormOutlinedIcon /> // ⛈ Hot + Humid → Thunderstorm
-              ) : info.temp >= 25 && info.humidity >= 50 ? (
-                <CloudOutlinedIcon /> // ☁️ Warm + Humid → Cloudy/Rainy
-              ) : info.temp >= 25 ? (
-                <WbSunnyOutlinedIcon /> // ☀️ Warm + Dry → Sunny
-              ) : (
-                <CloudOutlinedIcon /> // Default → Cloudy
-              )}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              <p>Temperature={info.temp} &deg;C</p>
-              <p>Humidity={info.humidity} </p>
-              <p>Max Temperature={info.tempMax} &deg;C</p>
-              <p>Min Temperature={info.tempMin} &deg;C</p>
-              <p>
-                The weather can be described as <i>{info.weather}</i> & feels
-                like {info.feelsLike} &deg;C
-              </p>
-            </Typography>
-          </CardContent>
-        </Card>
+    <div style={glass}>
+      <div style={badge}>
+        {isNight ? "🌙" : "☀️"} {label}
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 26, fontWeight: 600, letterSpacing: -0.5 }}>
+            {info.city}{info.country ? `, ${info.country}` : ""}
+          </div>
+          <div style={{ fontSize: 68, fontWeight: 300, fontFamily: "'Space Mono', monospace", lineHeight: 1 }}>
+            {Math.round(info.temp)}°C
+          </div>
+          <div style={{ fontSize: 15, opacity: 0.85, textTransform: "capitalize", marginTop: 4 }}>
+            {info.weather}
+          </div>
+        </div>
+        <div style={{ fontSize: 56, lineHeight: 1 }}>{icon}</div>
+      </div>
+
+      <div style={metaGrid}>
+        <div style={metaItem}>
+          <div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.8px" }}>Feels like</div>
+          <div style={{ fontSize: 18, fontWeight: 500, marginTop: 2 }}>{Math.round(info.feelsLike)}°C</div>
+        </div>
+        <div style={metaItem}>
+          <div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.8px" }}>Humidity</div>
+          <div style={{ fontSize: 18, fontWeight: 500, marginTop: 2 }}>{info.humidity}%</div>
+        </div>
+        <div style={metaItem}>
+          <div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.8px" }}>High / Low</div>
+          <div style={{ fontSize: 18, fontWeight: 500, marginTop: 2 }}>
+            {Math.round(info.tempMax)}° / {Math.round(info.tempMin)}°
+          </div>
+        </div>
+        <div style={metaItem}>
+          <div style={{ fontSize: 11, opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.8px" }}>Wind</div>
+          <div style={{ fontSize: 18, fontWeight: 500, marginTop: 2 }}>{(info.wind || 0).toFixed(1)} m/s</div>
+        </div>
       </div>
     </div>
   );
