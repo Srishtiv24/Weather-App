@@ -1,16 +1,17 @@
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-function getWeatherIcon(desc, temp) {
+function getWeatherIcon(desc, temp, isNight = false) {
   const d = (desc || "").toLowerCase();
+
   if (d.includes("thunder") || d.includes("storm")) return "⛈";
   if (d.includes("snow")) return "❄️";
   if (d.includes("rain") || d.includes("drizzle")) return "🌧";
   if (d.includes("fog") || d.includes("haze") || d.includes("mist")) return "🌫";
   if (d.includes("cloud")) return "⛅";
-  if (temp > 30) return "☀️";
-  return "🌤";
-}
+
+    return isNight ? "🌙" : "☀️";
+  }
+
 
 function getLocalTime(timezone) {
   const now = new Date(
@@ -27,7 +28,7 @@ function getLocalTime(timezone) {
 
 export default function InfoBox({ info }) {
   const { label, isNight } = getLocalTime(info.timezone);
-  const icon = getWeatherIcon(info.weather, info.temp);
+  const icon = getWeatherIcon(info.weather, info.temp,isNight);
 
   const glass = {
     background: "rgba(255,255,255,0.15)",
