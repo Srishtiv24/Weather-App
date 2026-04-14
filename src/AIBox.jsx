@@ -69,7 +69,7 @@ function TypingDots() {
   );
 }
 
-// Typewriter that animates plain text char by char then renders formatted HTML at the end
+//Typewriter that animates plain text char by char then renders formatted HTML at the end
 function TypewriterMessage({ text }) {
   const [visibleCount, setVisibleCount] = useState(0);
   const intervalRef = useRef(null);
