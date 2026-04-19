@@ -23,3 +23,8 @@ A modern weather app with an **AI assistant** that provides real-time forecasts,
 
 ---
 ![img1](./preview.jpg)
+![img1](./preview2.jpg)
+![img1](./preview3.jpg)
+![img1](./preview4.jpg)
+![img1](./preview5.jpg)
+
