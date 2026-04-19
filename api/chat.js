@@ -1,22 +1,16 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-dotenv.config();
+  const { system, messages } = req.body;
 
-const app = express();
-app.use(cors({ origin: "http://localhost:5173" })); // your Vite dev server
-app.use(express.json());
-
-app.post("/api/chat", async (req, res) => {
   try {
-    const { messages, system } = req.body;
-
     const response = await fetch("https://api.kilo.ai/api/gateway/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.KILO_API_KEY}`,
+        Authorization: `Bearer ${process.env.KILO_API_KEY}`,
       },
       body: JSON.stringify({
         model: "kilo-auto/free",
@@ -34,25 +28,19 @@ app.post("/api/chat", async (req, res) => {
       return res.status(response.status).json({ error: err });
     }
 
-    // Forward the SSE stream directly to the client
+    // Stream the SSE response straight back to the client
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    response.body.pipeTo(
-      new WritableStream({
-        write(chunk) {
-          res.write(chunk);
-        },
-        close() {
-          res.end();
-        },
-      })
-    );
+    const reader = response.body.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      res.write(value);
+    }
+    res.end();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Proxy running on http://localhost:${PORT}`));
+}

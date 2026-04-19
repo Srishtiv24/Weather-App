@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import SendIcon from '@mui/icons-material/Send';
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -117,7 +118,7 @@ function Message({ msg }) {
           background: "rgba(255,255,255,0.2)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 14, marginRight: 8, flexShrink: 0, marginTop: 2,
-        }}>🌤</div>
+        }}>✦</div>
       )}
       <div style={{
         maxWidth: "78%", padding: "10px 14px",
@@ -176,7 +177,7 @@ export default function AIBox({ info, forecast }) {
     setInput("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -298,7 +299,7 @@ export default function AIBox({ info, forecast }) {
             color: "#fff", cursor: input.trim() && !loading ? "pointer" : "not-allowed",
             fontSize: 16, transition: "background 0.2s",
           }}
-        >↑</button>
+        ><SendIcon/></button>
       </div>
     </div>
   );
