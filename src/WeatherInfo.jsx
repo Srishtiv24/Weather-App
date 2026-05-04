@@ -40,9 +40,9 @@ function isNightTime(timezone) {
 export default function WeatherInfo() {
   const [info, setInfo] = useState({
     city: "Delhi", country: "IN",
-    feelsLike: 24.84, temp: 38.05,
-    tempMax: 25.05, tempMin: 25.05,
-    humidity: 47, weather: "haze",
+    feelsLike: 24.84, temp: 40.05,
+    tempMax: 45.05, tempMin: 40.05,
+    humidity: 47, weather: "sunny",
     wind: 2.1, timezone: 19800,
   });
   const [forecast, setForecast] = useState([]);
