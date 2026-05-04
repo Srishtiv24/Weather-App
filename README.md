@@ -17,8 +17,8 @@ A modern weather app with an **AI assistant** that provides real-time forecasts,
 
 ## 🛠️ Tech Stack
 
-* **Frontend:** React.js, JavaScript, CSS, MUI Icons
-* **Backend:** Node.js, Express.js
+* **Frontend:** React.js, JavaScript, CSS, Material UI
+* **Backend:** Vercel Serverless Functions
 * **APIs:** Open Weather API , Kilo AI API
 
 ---
